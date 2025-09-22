@@ -1,0 +1,154 @@
+DROP DATABASE IF EXISTS HotelDB;
+
+#Create a new database :
+CREATE DATABASE HotelDB;
+
+#Use the database:
+USE HotelDB;
+
+# Create the table : 
+CREATE TABLE HotelReservations (
+    Booking_ID VARCHAR(10) PRIMARY KEY,
+    no_of_adults INT,
+    no_of_children INT,
+    no_of_weekend_nights INT,
+    no_of_week_nights INT,
+    type_of_meal_plan VARCHAR(50),
+    room_type_reserved VARCHAR(50),
+    lead_time INT,
+    market_segment_type VARCHAR(50),
+    avg_price_per_room DECIMAL(10,2),
+    booking_status VARCHAR(20)
+);
+
+# Insert the data into table:
+
+INSERT INTO HotelReservations VALUES
+('INN00001', 2, 0, 1, 2, 'Meal Plan 1', 'Room_Type 1', 224, 'Offline', 65, 'Not Cancelled'),
+('INN00002', 2, 0, 2, 3, 'Not Selected', 'Room_Type 1', 5, 'Online', 106.68, 'Not Cancelled'),
+('INN00003', 1, 0, 2, 1, 'Meal Plan 1', 'Room_Type 1', 1, 'Online', 60, 'Cancelled'),
+('INN00004', 2, 0, 0, 2, 'Meal Plan 1', 'Room_Type 1', 211, 'Online', 100, 'Cancelled'),
+('INN00005', 2, 0, 1, 1, 'Not Selected', 'Room_Type 1', 48, 'Online', 94.5, 'Cancelled'),
+('INN00006', 2, 0, 0, 2, 'Meal Plan 2', 'Room_Type 1', 346, 'Online', 115, 'Cancelled'),
+('INN00007', 2, 0, 1, 3, 'Meal Plan 1', 'Room_Type 1', 34, 'Online', 107.55, 'Not Cancelled'),
+('INN00008', 2, 0, 1, 3, 'Meal Plan 1', 'Room_Type 4', 83, 'Online', 105.61, 'Not Cancelled'),
+('INN00009', 3, 0, 0, 4, 'Meal Plan 1', 'Room_Type 1', 121, 'Offline', 96.9, 'Not Cancelled'),
+('INN00010', 2, 0, 0, 5, 'Meal Plan 1', 'Room_Type 4', 44, 'Online', 133.44, 'Not Cancelled'),
+('INN00011', 1, 0, 1, 0, 'Not Selected', 'Room_Type 1', 0, 'Online', 85.03, 'Not Cancelled'),
+('INN00012', 1, 0, 2, 1, 'Meal Plan 1', 'Room_Type 4', 35, 'Online', 140.4, 'Not Cancelled'),
+('INN00013', 2, 0, 2, 1, 'Not Selected', 'Room_Type 1', 30, 'Online', 88, 'Cancelled'),
+('INN00014', 1, 0, 2, 0, 'Meal Plan 1', 'Room_Type 1', 95, 'Online', 90, 'Cancelled'),
+('INN00015', 2, 0, 0, 2, 'Meal Plan 1', 'Room_Type 1', 47, 'Online', 94.5, 'Not Cancelled'),
+('INN00016', 2, 0, 0, 2, 'Meal Plan 2', 'Room_Type 1', 256, 'Online', 115, 'Cancelled'),
+('INN00017', 1, 0, 1, 0, 'Meal Plan 1', 'Room_Type 1', 0, 'Offline', 96, 'Not Cancelled'),
+('INN00018', 2, 0, 1, 3, 'Not Selected', 'Room_Type 1', 1, 'Online', 96, 'Not Cancelled'),
+('INN00019', 2, 0, 2, 2, 'Meal Plan 1', 'Room_Type 1', 99, 'Online', 65, 'Cancelled'),
+('INN00020', 2, 0, 1, 0, 'Meal Plan 1', 'Room_Type 1', 12, 'Offline', 72, 'Not Cancelled');
+
+#Verified the data :
+SELECT * FROM HotelReservations;
+
+#--------------------------------------- Queries-------------------------------------------------------------------------------------------------------
+#1. View all bookings
+SELECT * FROM HotelReservations;
+
+#2.Count total bookings
+SELECT COUNT(*) AS TotalBookings 
+FROM HotelReservations;
+
+#3.Count cancelled and not cancelled bookings separately
+SELECT booking_status, COUNT(*) AS CountBookings 
+FROM HotelReservations 
+GROUP BY booking_status;
+
+#4. Average price per room
+SELECT AVG(avg_price_per_room) AS AvgRoomPrice 
+FROM HotelReservations;
+
+#5.Maximum and minimum price booked :
+SELECT MAX(avg_price_per_room) AS MaxPrice, MIN(avg_price_per_room) AS MinPrice 
+FROM HotelReservations;
+
+#-------------------Intermediate Queries
+# 6. Total adults and children booked
+SELECT SUM(no_of_adults) AS TotalAdults, SUM(no_of_children) AS TotalChildren 
+FROM HotelReservations;
+
+# 7. Bookings by meal plan :
+SELECT type_of_meal_plan, COUNT(*) AS CountBookings 
+FROM HotelReservations 
+GROUP BY type_of_meal_plan;
+
+ # 8. Bookings by room type
+SELECT room_type_reserved, COUNT(*) AS CountBookings 
+FROM HotelReservations 
+GROUP BY room_type_reserved;
+
+#9.Average price per market segment
+SELECT market_segment_type, AVG(avg_price_per_room) AS AvgPrice 
+FROM HotelReservations 
+GROUP BY market_segment_type;
+
+#10. Bookings with more than 2 adults
+SELECT * FROM HotelReservations 
+WHERE no_of_adults > 2;
+
+
+#11. Bookings sorted by lead time
+SELECT * FROM HotelReservations 
+ORDER BY lead_time DESC;
+
+
+#12. Top 5 expensive bookings
+SELECT * FROM HotelReservations 
+ORDER BY avg_price_per_room DESC 
+LIMIT 5;
+
+
+#13. Bookings with weekend nights more than week nights
+SELECT * FROM HotelReservations 
+WHERE no_of_weekend_nights > no_of_week_nights;
+
+
+#14. Revenue per meal plan 
+SELECT type_of_meal_plan, SUM(avg_price_per_room) AS TotalRevenue 
+FROM HotelReservations 
+GROUP BY type_of_meal_plan;
+
+#15 .Average lead time per booking status
+SELECT booking_status, AVG(lead_time) AS AvgLeadTime 
+FROM HotelReservations 
+GROUP BY booking_status;
+
+
+#16. Percentage of cancelled bookings
+SELECT 
+  (COUNT(CASE WHEN booking_status='Cancelled' THEN 1 END) * 100.0 / COUNT(*)) AS CancelledPercentage
+FROM HotelReservations;
+
+#17. Bookings per market segment and room type
+SELECT market_segment_type, room_type_reserved, COUNT(*) AS CountBookings 
+FROM HotelReservations 
+GROUP BY market_segment_type, room_type_reserved;
+
+
+#18. Booking status with total adults and total children
+SELECT booking_status, SUM(no_of_adults) AS TotalAdults, SUM(no_of_children) AS TotalChildren 
+FROM HotelReservations 
+GROUP BY booking_status;
+
+
+#19. Bookings with lead time > 100 days
+SELECT * FROM HotelReservations 
+WHERE lead_time > 100;
+
+#20. Use CASE to categorize bookings by price
+SELECT 
+  Booking_ID,
+  avg_price_per_room,
+  CASE 
+    WHEN avg_price_per_room < 80 THEN 'Budget'
+    WHEN avg_price_per_room BETWEEN 80 AND 120 THEN 'Standard'
+    ELSE 'Premium'
+  END AS PriceCategory
+FROM HotelReservations;
